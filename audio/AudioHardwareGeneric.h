@@ -134,6 +134,7 @@ public:
     virtual    void        closeInputStream(AudioStreamIn* in);
 
             void            closeOutputStream(AudioStreamOutGeneric* out);
+    virtual size_t          getInputBufferSize(uint32_t sampleRate, int format, int channelCount);
             void            closeInputStream(AudioStreamInGeneric* in);
 protected:
     virtual status_t        dump(int fd, const Vector<String16>& args);

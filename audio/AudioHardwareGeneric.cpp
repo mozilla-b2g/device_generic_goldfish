@@ -185,6 +185,30 @@ status_t AudioHardwareGeneric::dump(int fd, const Vector<String16>& args)
     return NO_ERROR;
 }
 
+size_t AudioHardwareGeneric::getInputBufferSize(uint32_t sampleRate, int format, int channelCount)
+{
+    if (format != AudioSystem::PCM_16_BIT) {
+        LOGW("getInputBufferSize supports only PCM_16_BIT, input %d", format);
+        return 0;
+    }
+    if (channelCount != 1) {
+        LOGW("getInputBufferSize supports channel count 1, input %d", channelCount);
+        return 0;
+    }
+
+    uint32_t bytesPerSample = audio_bytes_per_sample(format);
+    uint32_t samplesPerChannel = 0;
+
+    if (sampleRate == 8000 || sampleRate == 16000) {
+        samplesPerChannel = sampleRate / 50;
+    } else if (sampleRate >= 44100) {
+        samplesPerChannel = 512;
+    } else {
+        samplesPerChannel = 256;
+    }
+
+   return samplesPerChannel * channelCount * bytesPerSample;
+}
 // ----------------------------------------------------------------------------
 
 status_t AudioStreamOutGeneric::set(
