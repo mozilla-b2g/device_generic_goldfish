@@ -1,0 +1,19 @@
+diff --git a/rootdir/etc/init.goldfish.sh b/rootdir/etc/init.goldfish.sh
+index ece75b4..e68ab47 100755
+--- a/rootdir/etc/init.goldfish.sh
++++ b/rootdir/etc/init.goldfish.sh
+@@ -1,13 +1,13 @@
+ #!/system/bin/sh
+ 
+ # Setup networking when boot starts
+ ifconfig eth0 10.0.2.15 netmask 255.255.255.0 up
+-route add default gw 10.0.2.2 dev eth0
++ip route add default via 10.0.2.2 dev eth0 metric 2
+ 
+ # ro.kernel.android.qemud is normally set when we
+ # want the RIL (radio interface layer) to talk to
+ # the emulated modem through qemud.
+ #
+ # However, this will be undefined in two cases:
+ #
+ # - When we want the RIL to talk directly to a guest
