@@ -31,6 +31,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <stdio.h>
+#include <string.h>
 #include "bt_vendor.h"
 #include "userial.h"
 #include "userial_vendor.h"
@@ -145,6 +146,47 @@ void userial_ioctl_init_bt_wake(int fd)
 }
 #endif // (BT_WAKE_VIA_USERIAL_IOCTL==TRUE)
 
+/*******************************************************************************
+**
+** Function        userial_vendor_parse_cmdline
+**
+** Description     Search /proc/cmdline for "android.bluetooth=%s", fill
+**                 vnd_userial.port_name if found.
+**
+** Returns         0 if found, otherwise -1.
+**
+*******************************************************************************/
+static int userial_vendor_parse_cmdline(void)
+{
+    int fd, ret = -1;
+    char buf[4096];
+
+    if ((fd = open("/proc/cmdline", O_RDONLY)) < 0)
+        return ret;
+
+    if (read(fd, buf, sizeof buf) > 0)
+    {
+        char *begin, *end;
+
+        begin = strstr(buf, "android.bluetooth=");
+        if (begin)
+        {
+            ret = 0;
+
+            begin += strlen("android.bluetooth=");
+            end = strchr(begin, ' ');
+            if (end)
+                *end = '\0';
+
+            snprintf(vnd_userial.port_name, VND_PORT_NAME_MAXLEN,
+                     "/dev/%s", begin);
+        }
+    }
+
+    close(fd);
+
+    return ret;
+}
 
 /*****************************************************************************
 **   Userial Vendor API Functions
@@ -162,6 +204,11 @@ void userial_ioctl_init_bt_wake(int fd)
 void userial_vendor_init(void)
 {
     vnd_userial.fd = -1;
+
+    if (!userial_vendor_parse_cmdline())
+        return;
+
+    ALOGW("userial vendor init: failed to parse /proc/cmdline");
     snprintf(vnd_userial.port_name, VND_PORT_NAME_MAXLEN, "%s", \
             BLUETOOTH_UART_DEVICE_PORT);
 }
