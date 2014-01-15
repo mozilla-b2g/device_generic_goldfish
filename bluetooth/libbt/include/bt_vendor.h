@@ -18,11 +18,11 @@
 
 /******************************************************************************
  *
- *  Filename:      bt_vendor_brcm.h
+ *  Filename:      bt_vendor.h
  *
  *  Description:   A wrapper header file of bt_vendor_lib.h
  *
- *                 Contains definitions specific for interfacing with Broadcom
+ *                 Contains definitions specific for interfacing with Goldfish
  *                 Bluetooth chipsets
  *
  ******************************************************************************/

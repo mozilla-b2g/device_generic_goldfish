@@ -28,7 +28,7 @@
 #ifndef USERIAL_VENDOR_H
 #define USERIAL_VENDOR_H
 
-#include "bt_vendor_brcm.h"
+#include "bt_vendor.h"
 #include "userial.h"
 
 /******************************************************************************
