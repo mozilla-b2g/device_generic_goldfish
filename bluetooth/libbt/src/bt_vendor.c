@@ -18,16 +18,16 @@
 
 /******************************************************************************
  *
- *  Filename:      bt_vendor_brcm.c
+ *  Filename:      bt_vendor.c
  *
- *  Description:   Broadcom vendor specific library implementation
+ *  Description:   Goldfish vendor specific library implementation
  *
  ******************************************************************************/
 
 #define LOG_TAG "bt_vendor"
 
 #include <utils/Log.h>
-#include "bt_vendor_brcm.h"
+#include "bt_vendor.h"
 #include "upio.h"
 #include "userial_vendor.h"
 
