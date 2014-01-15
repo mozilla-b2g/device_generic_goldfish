@@ -31,7 +31,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <stdio.h>
-#include "bt_vendor_brcm.h"
+#include "bt_vendor.h"
 #include "userial.h"
 #include "userial_vendor.h"
 

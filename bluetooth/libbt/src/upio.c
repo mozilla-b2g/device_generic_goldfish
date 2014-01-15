@@ -32,7 +32,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <cutils/properties.h>
-#include "bt_vendor_brcm.h"
+#include "bt_vendor.h"
 #include "upio.h"
 #include "userial_vendor.h"
 
