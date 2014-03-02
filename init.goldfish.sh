@@ -57,6 +57,21 @@ case "$boot_anim" in
     ;;
 esac
 
+# rename network interface from "fooX" to "barY"
+# example: android.ifrename=eth1:rmnet0
+for karg in `cat /proc/cmdline`; do
+    case "$karg" in
+        android.ifrename=*)
+            pair=${karg:17}
+            from=${pair%%:*}
+            to=${pair##*:}
+            if [ -n "$from" -a -n "$to" ]; then
+                ip link set $from name $to
+            fi
+            ;;
+    esac
+done
+
 # set up the second interface (for inter-emulator connections)
 # if required
 my_ip=`getprop net.shared_net_ip`
