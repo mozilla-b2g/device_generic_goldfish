@@ -16,6 +16,7 @@ LOCAL_PATH := $(call my-dir)
 
 ADDITIONAL_BUILD_PROPERTIES += \
   ro.moz.ril.query_icc_count=true \
+  ro.moz.ril.ipv6=true \
   $(NULL)
 
 .PHONY: patch-init-goldfish-sh
