@@ -1,5 +1,5 @@
 diff --git a/rootdir/etc/init.goldfish.sh b/rootdir/etc/init.goldfish.sh
-index ece75b4..e68ab47 100755
+index ece75b4..2a00e2d 100755
 --- a/rootdir/etc/init.goldfish.sh
 +++ b/rootdir/etc/init.goldfish.sh
 @@ -1,13 +1,13 @@
@@ -17,3 +17,35 @@ index ece75b4..e68ab47 100755
  # However, this will be undefined in two cases:
  #
  # - When we want the RIL to talk directly to a guest
+@@ -52,16 +52,31 @@ esac
+ 
+ # disable boot animation for a faster boot sequence when needed
+ boot_anim=`getprop ro.kernel.android.bootanim`
+ case "$boot_anim" in
+     0)  setprop debug.sf.nobootanimation 1
+     ;;
+ esac
+ 
++# rename network interface from "fooX" to "barY"
++# example: android.ifrename=eth1:rmnet0
++for karg in `cat /proc/cmdline`; do
++    case "$karg" in
++        android.ifrename=*)
++            pair=${karg:17}
++            from=${pair%%:*}
++            to=${pair##*:}
++            if [ -n "$from" -a -n "$to" ]; then
++                ip link set $from name $to
++            fi
++            ;;
++    esac
++done
++
+ # set up the second interface (for inter-emulator connections)
+ # if required
+ my_ip=`getprop net.shared_net_ip`
+ case "$my_ip" in
+     "")
+     ;;
+     *) ifconfig eth1 "$my_ip" netmask 255.255.255.0 up
+     ;;
