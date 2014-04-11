@@ -15,10 +15,9 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE       := init.goldfish.bt.sh
-LOCAL_MODULE_TAGS  := optional eng
+LOCAL_MODULE       := wpa_supplicant.conf
+LOCAL_MODULE_TAGS  := optional
 LOCAL_MODULE_CLASS := ETC
-LOCAL_SRC_FILES    := init.goldfish.bt.sh
-LOCAL_MODULE_PATH  := $(TARGET_OUT_ETC)
+LOCAL_SRC_FILES    := $(LOCAL_MODULE)
+LOCAL_MODULE_PATH  := $(TARGET_OUT_ETC)/wifi
 include $(BUILD_PREBUILT)
-
