@@ -1,0 +1,11 @@
+<Bluedroid>
+<N1 Tag="Local">
+    <N1 Tag="Adapter">
+        <N1 Tag="BluezMigrationDone" Type="int">1</N1>
+        <N2 Tag="Address" Type="string">56:34:12:00:54:52</N2>
+        <N3 Tag="ScanMode" Type="int">0</N3>
+        <N4 Tag="DiscoveryTimeout" Type="int">120</N4>
+        <N5 Tag="Name" Type="string">Full Android on Emulator</N5>
+    </N1>
+</N1>
+</Bluedroid>
