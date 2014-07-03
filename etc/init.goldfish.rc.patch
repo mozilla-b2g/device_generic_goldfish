@@ -1,5 +1,5 @@
 diff --git a/rootdir/etc/init.goldfish.rc b/rootdir/etc/init.goldfish.rc
-index 83b7f8a..6c4a8f5 100644
+index 83b7f8a..9df648a 100644
 --- a/rootdir/etc/init.goldfish.rc
 +++ b/rootdir/etc/init.goldfish.rc
 @@ -1,23 +1,33 @@
@@ -36,7 +36,7 @@ index 83b7f8a..6c4a8f5 100644
  
  # disable some daemons the emulator doesn't want
      stop dund
-@@ -25,16 +35,52 @@ on boot
+@@ -25,16 +35,56 @@ on boot
  
  # start essential services
      start qemud
@@ -53,8 +53,12 @@ index 83b7f8a..6c4a8f5 100644
 +    mkdir /data/misc/wifi/sockets 0770 wifi wifi
 +    mkdir /data/misc/wifi/wpa_supplicant 0770 wifi wifi
 +    mkdir /data/misc/wifi/hostapd 0770 wifi wifi
++    mkdir /data/misc/wifi/remote-hostapd 0770 wifi wifi # emulator should use this folder.
 +    mkdir /data/misc/dhcp 0770 dhcp dhcp
 +    chown dhcp dhcp /data/misc/dhcp
++
++    # Create a writable fake fwpath for emulator. (/sys/module/wlan/parameters/fwpath on device)
++    write /data/misc/wifi/fake_fwpath sta
 +
 +service wpa_supplicant /system/bin/logwrapper /system/bin/wpa_supplicant -Dtest -iwlan0 -c/data/misc/wifi/wpa_supplicant_test.conf -ddd
 +    class late_start
@@ -89,7 +93,7 @@ index 83b7f8a..6c4a8f5 100644
  # account info for the device via these two properties.  Google
  # Login Service will insert these accounts into the database when
  # it is created (ie, after a data wipe).
-@@ -71,8 +117,15 @@ service qemud /system/bin/qemud
+@@ -71,8 +121,15 @@ service qemud /system/bin/qemud
  # -Q is a special logcat option that forces the
  # program to check wether it runs on the emulator
  # if it does, it redirects its output to the device
