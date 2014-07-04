@@ -192,3 +192,8 @@ service rilproxy8 /system/bin/rilproxy -c 8
     socket rilproxy8 stream 660 root system
     user root
     group radio
+
+service dhcpcd_eth1 /system/bin/dhcpcd -ABKLG
+    class late_start
+    disabled
+    oneshot
