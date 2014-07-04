@@ -1,5 +1,5 @@
 diff --git a/rootdir/etc/init.goldfish.rc b/rootdir/etc/init.goldfish.rc
-index 83b7f8a..9df648a 100644
+index 83b7f8a..2864fc6 100644
 --- a/rootdir/etc/init.goldfish.rc
 +++ b/rootdir/etc/init.goldfish.rc
 @@ -1,23 +1,33 @@
@@ -36,7 +36,7 @@ index 83b7f8a..9df648a 100644
  
  # disable some daemons the emulator doesn't want
      stop dund
-@@ -25,16 +35,56 @@ on boot
+@@ -25,16 +35,61 @@ on boot
  
  # start essential services
      start qemud
@@ -68,6 +68,11 @@ index 83b7f8a..9df648a 100644
 +    disabled
 +    oneshot
 +
++service dhcpcd_eth1 /system/bin/dhcpd -ABKLG
++    class late_start
++    disabled
++    oneshot
++
 +service dhcpcd_wlan0 /system/bin/dhcpcd -ABKLG
 +    class late_start
 +    disabled
@@ -93,7 +98,7 @@ index 83b7f8a..9df648a 100644
  # account info for the device via these two properties.  Google
  # Login Service will insert these accounts into the database when
  # it is created (ie, after a data wipe).
-@@ -71,8 +121,15 @@ service qemud /system/bin/qemud
+@@ -71,8 +126,15 @@ service qemud /system/bin/qemud
  # -Q is a special logcat option that forces the
  # program to check wether it runs on the emulator
  # if it does, it redirects its output to the device
