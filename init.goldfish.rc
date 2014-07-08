@@ -40,6 +40,12 @@ on boot
 # like NetworkLocationProvider and LocationCollector
     setprop ro.com.google.locationfeatures 1
 
+on post-fs-data
+    # Create the directories used by DarwinStreamingServer.
+    mkdir /data/misc/streaming 0770
+    mkdir /data/misc/streaming/logs 0770
+    mkdir /data/misc/streaming/media 0770
+
 # For the emulator, which bypasses Setup Wizard, you can specify
 # account info for the device via these two properties.  Google
 # Login Service will insert these accounts into the database when
@@ -197,4 +203,16 @@ service rilproxy8 /system/bin/rilproxy -c 8
 service dhcpcd_eth1 /system/bin/dhcpcd -ABKLG
     class late_start
     disabled
+    oneshot
+
+# Darwin Streaming Server.
+service dss /system/bin/DarwinStreamingServer -d
+    class late_start
+    user root
+    disabled
+    oneshot
+
+service dss-setup /system/bin/sh /system/etc/init.goldfish.dss.sh
+    class late_start
+    user root
     oneshot
