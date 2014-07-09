@@ -1,5 +1,5 @@
 diff --git a/rootdir/etc/init.goldfish.rc b/rootdir/etc/init.goldfish.rc
-index 83b7f8a..2864fc6 100644
+index 83b7f8a..ba7753d 100644
 --- a/rootdir/etc/init.goldfish.rc
 +++ b/rootdir/etc/init.goldfish.rc
 @@ -1,23 +1,33 @@
@@ -36,7 +36,7 @@ index 83b7f8a..2864fc6 100644
  
  # disable some daemons the emulator doesn't want
      stop dund
-@@ -25,16 +35,61 @@ on boot
+@@ -25,16 +35,78 @@ on boot
  
  # start essential services
      start qemud
@@ -59,6 +59,11 @@ index 83b7f8a..2864fc6 100644
 +
 +    # Create a writable fake fwpath for emulator. (/sys/module/wlan/parameters/fwpath on device)
 +    write /data/misc/wifi/fake_fwpath sta
++
++    # Create the directories used by DarwinStreamingServer.
++    mkdir /data/misc/streaming 0770
++    mkdir /data/misc/streaming/logs 0770
++    mkdir /data/misc/streaming/media 0770
 +
 +service wpa_supplicant /system/bin/logwrapper /system/bin/wpa_supplicant -Dtest -iwlan0 -c/data/misc/wifi/wpa_supplicant_test.conf -ddd
 +    class late_start
@@ -90,6 +95,18 @@ index 83b7f8a..2864fc6 100644
 +    group wifi net
 +    oneshot 
 +
++# Darwin Streaming Server.
++service dss /system/bin/DarwinStreamingServer -d
++    class late_start
++    user root
++    disabled
++    oneshot
++
++service dss-setup /system/bin/sh /system/etc/init.goldfish.dss.sh
++    class late_start
++    user root
++    oneshot
++
  # enable Google-specific location features,
  # like NetworkLocationProvider and LocationCollector
      setprop ro.com.google.locationfeatures 1
@@ -98,7 +115,7 @@ index 83b7f8a..2864fc6 100644
  # account info for the device via these two properties.  Google
  # Login Service will insert these accounts into the database when
  # it is created (ie, after a data wipe).
-@@ -71,8 +126,15 @@ service qemud /system/bin/qemud
+@@ -71,8 +143,15 @@ service qemud /system/bin/qemud
  # -Q is a special logcat option that forces the
  # program to check wether it runs on the emulator
  # if it does, it redirects its output to the device
