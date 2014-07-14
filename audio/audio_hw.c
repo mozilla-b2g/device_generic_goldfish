@@ -36,8 +36,6 @@
 #define OUT_SAMPLING_RATE 44100
 #define OUT_BUFFER_SIZE 4096
 #define OUT_LATENCY_MS 20
-#define IN_SAMPLING_RATE 8000
-#define IN_BUFFER_SIZE 320
 
 
 struct generic_audio_device {
@@ -60,8 +58,36 @@ struct generic_stream_in {
     struct audio_stream_in stream;
     struct generic_audio_device *dev;
     audio_devices_t device;
+    uint32_t requested_sample_rate;
 };
 
+
+static size_t calculate_input_buffer_size(const uint32_t sample_rate,
+                                          audio_format_t format,
+                                          audio_channel_mask_t channels)
+{
+    uint32_t samples_per_channel;
+    uint32_t channel_count;
+    uint32_t bytes_per_sample;
+
+    if (format != AUDIO_FORMAT_PCM_16_BIT ||
+        channels != AUDIO_CHANNEL_IN_MONO) {
+      return 0;
+    }
+
+    channel_count = popcount(channels);
+    bytes_per_sample = audio_bytes_per_sample(format);
+
+    if (sample_rate == 8000 || sample_rate == 16000) {
+        samples_per_channel = sample_rate / 50;
+    } else if (sample_rate >= 44100) {
+        samples_per_channel = 512;
+    } else {
+        samples_per_channel = 256;
+    }
+
+    return samples_per_channel * channel_count * bytes_per_sample;
+}
 
 static uint32_t out_get_sample_rate(const struct audio_stream *stream)
 {
@@ -221,17 +247,13 @@ static int out_get_next_write_timestamp(const struct audio_stream_out *stream,
 /** audio_stream_in implementation **/
 static uint32_t in_get_sample_rate(const struct audio_stream *stream)
 {
-    return IN_SAMPLING_RATE;
+    struct generic_stream_in *in = (struct generic_stream_in *)stream;
+    return in->requested_sample_rate;
 }
 
 static int in_set_sample_rate(struct audio_stream *stream, uint32_t rate)
 {
     return -ENOSYS;
-}
-
-static size_t in_get_buffer_size(const struct audio_stream *stream)
-{
-    return IN_BUFFER_SIZE;
 }
 
 static audio_channel_mask_t in_get_channels(const struct audio_stream *stream)
@@ -242,6 +264,14 @@ static audio_channel_mask_t in_get_channels(const struct audio_stream *stream)
 static audio_format_t in_get_format(const struct audio_stream *stream)
 {
     return AUDIO_FORMAT_PCM_16_BIT;
+}
+
+static size_t in_get_buffer_size(const struct audio_stream *stream)
+{
+    struct generic_stream_in *in = (struct generic_stream_in *)stream;
+    return calculate_input_buffer_size(in_get_sample_rate(stream),
+                                       in_get_format(stream),
+                                       in_get_channels(stream));
 }
 
 static int in_set_format(struct audio_stream *stream, audio_format_t format)
@@ -516,7 +546,9 @@ static int adev_get_mic_mute(const struct audio_hw_device *dev, bool *state)
 static size_t adev_get_input_buffer_size(const struct audio_hw_device *dev,
                                          const struct audio_config *config)
 {
-    return IN_BUFFER_SIZE;
+    return calculate_input_buffer_size(config->sample_rate,
+                                       config->format,
+                                       config->channel_mask);
 }
 
 static int adev_open_input_stream(struct audio_hw_device *dev,
@@ -536,13 +568,11 @@ static int adev_open_input_stream(struct audio_hw_device *dev,
     }
 
     if ((config->format != AUDIO_FORMAT_PCM_16_BIT) ||
-        (config->channel_mask != AUDIO_CHANNEL_IN_MONO) ||
-        (config->sample_rate != IN_SAMPLING_RATE)) {
+        (config->channel_mask != AUDIO_CHANNEL_IN_MONO)) {
         ALOGE("Error opening input stream format %d, channel_mask %04x, sample_rate %u",
               config->format, config->channel_mask, config->sample_rate);
         config->format = AUDIO_FORMAT_PCM_16_BIT;
         config->channel_mask = AUDIO_CHANNEL_IN_MONO;
-        config->sample_rate = IN_SAMPLING_RATE;
         ret = -EINVAL;
         goto error;
     }
@@ -567,6 +597,7 @@ static int adev_open_input_stream(struct audio_hw_device *dev,
 
     in->dev = adev;
     in->device = devices;
+    in->requested_sample_rate = config->sample_rate;
     adev->input = (struct audio_stream_in *)in;
     *stream_in = &in->stream;
 
