@@ -16,6 +16,7 @@ LOCAL_PATH := $(call my-dir)
 
 ADDITIONAL_BUILD_PROPERTIES += \
   ro.moz.ril.query_icc_count=true \
+  ro.moz.ril.0.network_types=gsm,wcdma,cdma,evdo \
   $(NULL)
 
 .PHONY: patch-init-goldfish-sh
