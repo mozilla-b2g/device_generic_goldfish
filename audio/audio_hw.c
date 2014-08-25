@@ -38,6 +38,9 @@
 #define OUT_LATENCY_MS 20
 
 
+static audio_channel_mask_t in_get_channels(const struct audio_stream *stream);
+static audio_format_t in_get_format(const struct audio_stream *stream);
+
 struct generic_audio_device {
     struct audio_hw_device device;
     pthread_mutex_t lock;
@@ -256,6 +259,14 @@ static int in_set_sample_rate(struct audio_stream *stream, uint32_t rate)
     return -ENOSYS;
 }
 
+static size_t in_get_buffer_size(const struct audio_stream *stream)
+{
+    struct generic_stream_in *in = (struct generic_stream_in *)stream;
+    return calculate_input_buffer_size(in_get_sample_rate(stream),
+                                       in_get_format(stream),
+                                       in_get_channels(stream));
+}
+
 static audio_channel_mask_t in_get_channels(const struct audio_stream *stream)
 {
     return AUDIO_CHANNEL_IN_MONO;
@@ -264,14 +275,6 @@ static audio_channel_mask_t in_get_channels(const struct audio_stream *stream)
 static audio_format_t in_get_format(const struct audio_stream *stream)
 {
     return AUDIO_FORMAT_PCM_16_BIT;
-}
-
-static size_t in_get_buffer_size(const struct audio_stream *stream)
-{
-    struct generic_stream_in *in = (struct generic_stream_in *)stream;
-    return calculate_input_buffer_size(in_get_sample_rate(stream),
-                                       in_get_format(stream),
-                                       in_get_channels(stream));
 }
 
 static int in_set_format(struct audio_stream *stream, audio_format_t format)
