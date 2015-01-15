@@ -114,9 +114,9 @@ service ril-daemon1 /system/bin/rild -c 1
 
 service rilproxy1 /system/bin/rilproxy -c 1
     class main
-    socket rilproxy1 stream 660 root system
-    user root
-    group radio
+    socket rilproxy1 stream 660 radio radio
+    user radio
+    group radio system
 
 service ril-daemon2 /system/bin/rild -c 2
     class main
@@ -127,9 +127,9 @@ service ril-daemon2 /system/bin/rild -c 2
 
 service rilproxy2 /system/bin/rilproxy -c 2
     class main
-    socket rilproxy2 stream 660 root system
-    user root
-    group radio
+    socket rilproxy2 stream 660 radio radio
+    user radio
+    group radio system
 
 service ril-daemon3 /system/bin/rild -c 3
     class main
@@ -140,9 +140,9 @@ service ril-daemon3 /system/bin/rild -c 3
 
 service rilproxy3 /system/bin/rilproxy -c 3
     class main
-    socket rilproxy3 stream 660 root system
-    user root
-    group radio
+    socket rilproxy3 stream 660 radio radio
+    user radio
+    group radio system
 
 service ril-daemon4 /system/bin/rild -c 4
     class main
@@ -153,9 +153,9 @@ service ril-daemon4 /system/bin/rild -c 4
 
 service rilproxy4 /system/bin/rilproxy -c 4
     class main
-    socket rilproxy4 stream 660 root system
-    user root
-    group radio
+    socket rilproxy4 stream 660 radio radio
+    user radio
+    group radio system
 
 service ril-daemon5 /system/bin/rild -c 5
     class main
@@ -166,9 +166,9 @@ service ril-daemon5 /system/bin/rild -c 5
 
 service rilproxy5 /system/bin/rilproxy -c 5
     class main
-    socket rilproxy5 stream 660 root system
-    user root
-    group radio
+    socket rilproxy5 stream 660 radio radio
+    user radio
+    group radio system
 
 service ril-daemon6 /system/bin/rild -c 6
     class main
@@ -179,9 +179,9 @@ service ril-daemon6 /system/bin/rild -c 6
 
 service rilproxy6 /system/bin/rilproxy -c 6
     class main
-    socket rilproxy6 stream 660 root system
-    user root
-    group radio
+    socket rilproxy6 stream 660 radio radio
+    user radio
+    group radio system
 
 service ril-daemon7 /system/bin/rild -c 7
     class main
@@ -192,9 +192,9 @@ service ril-daemon7 /system/bin/rild -c 7
 
 service rilproxy7 /system/bin/rilproxy -c 7
     class main
-    socket rilproxy7 stream 660 root system
-    user root
-    group radio
+    socket rilproxy7 stream 660 radio radio
+    user radio
+    group radio system
 
 service ril-daemon8 /system/bin/rild -c 8
     class main
@@ -205,9 +205,9 @@ service ril-daemon8 /system/bin/rild -c 8
 
 service rilproxy8 /system/bin/rilproxy -c 8
     class main
-    socket rilproxy8 stream 660 root system
-    user root
-    group radio
+    socket rilproxy8 stream 660 radio radio
+    user radio
+    group radio system
 
 service dhcpcd_eth1 /system/bin/dhcpcd -ABKLG
     class late_start
