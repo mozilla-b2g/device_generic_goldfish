@@ -365,6 +365,7 @@ protected:
             inline explicit WorkerThread(EmulatedCameraDevice* camera_dev)
                 : Thread(true),   // Callbacks may involve Java calls.
                   mCameraDevice(camera_dev),
+                  mLock("EmulatedCameraDevice::WorkerThread::mLock"),
                   mThreadControl(-1),
                   mControlFD(-1)
             {
@@ -393,11 +394,7 @@ protected:
              * Return:
              *  NO_ERROR on success, or an appropriate error status.
              */
-            inline status_t startThread(bool one_burst)
-            {
-                mOneBurst = one_burst;
-                return run(NULL, ANDROID_PRIORITY_URGENT_DISPLAY, 0);
-            }
+            status_t startThread(bool one_burst);
 
             /* Overriden base class method.
              * It is overriden in order to provide one-time initialization just
@@ -451,6 +448,11 @@ protected:
 
             /* Containing camera device object. */
             EmulatedCameraDevice*   mCameraDevice;
+
+            /* With mLock, they ensure startThread() waiting for worker thread. */
+            Condition               mThreadStartCondition;
+
+            mutable Mutex           mLock;
 
             /* FD that is used to send control messages into the thread. */
             int                     mThreadControl;
