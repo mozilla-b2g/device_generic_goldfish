@@ -299,7 +299,7 @@ status_t EmulatedCameraDevice::WorkerThread::readyToRun()
         ALOGV("Emulated device's worker thread has been started.");
     } else {
         ALOGE("%s: Unable to create thread control FDs: %d -> %s",
-              __FUNCTION__, errno, strerror(errno));
+             __FUNCTION__, errno, strerror(errno));
         rv = errno;
     }
 
