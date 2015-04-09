@@ -2,7 +2,7 @@
 
 # Setup networking when boot starts
 ifconfig eth0 10.0.2.15 netmask 255.255.255.0 up
-route add default gw 10.0.2.2 dev eth0
+ip route add default via 10.0.2.2 dev eth0 metric 2
 
 # ro.kernel.android.qemud is normally set when we
 # want the RIL (radio interface layer) to talk to
@@ -56,6 +56,21 @@ case "$boot_anim" in
     0)  setprop debug.sf.nobootanimation 1
     ;;
 esac
+
+# rename network interface from "fooX" to "barY"
+# example: android.ifrename=eth1:rmnet0
+for karg in `cat /proc/cmdline`; do
+    case "$karg" in
+        android.ifrename=*)
+            pair=${karg:17}
+            from=${pair%%:*}
+            to=${pair##*:}
+            if [ -n "$from" -a -n "$to" ]; then
+                ip link set $from name $to
+            fi
+            ;;
+    esac
+done
 
 # set up the second interface (for inter-emulator connections)
 # if required
