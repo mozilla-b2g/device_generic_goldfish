@@ -118,17 +118,6 @@ typedef enum {
 
 /*******************************************************************************
 **
-** Function        userial_vendor_init
-**
-** Description     Initialize userial vendor-specific control block
-**
-** Returns         None
-**
-*******************************************************************************/
-void userial_vendor_init(void);
-
-/*******************************************************************************
-**
 ** Function        userial_vendor_open
 **
 ** Description     Open the serial port with the given configuration
