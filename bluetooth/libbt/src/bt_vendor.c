@@ -111,7 +111,6 @@ static int init(const bt_vendor_callbacks_t* p_cb, unsigned char *local_bdaddr)
     ALOGW("*****************************************************************");
 #endif
 
-    userial_vendor_init();
     upio_init();
 
     vnd_load_conf(VENDOR_LIB_CONF_FILE);
