@@ -47,6 +47,7 @@ struct generic_audio_device {
     struct audio_stream_in *input;
     int fd;
     bool mic_mute;
+    pthread_mutex_t mic_lock;
 };
 
 
@@ -341,9 +342,11 @@ static ssize_t in_read(struct audio_stream_in *stream, void* buffer,
     pthread_mutex_lock(&adev->lock);
     if (adev->fd >= 0)
         bytes = read(adev->fd, buffer, bytes);
+    pthread_mutex_lock(&(adev->mic_lock));
     if (adev->mic_mute && (bytes > 0)) {
         memset(buffer, 0, bytes);
     }
+    pthread_mutex_unlock(&(adev->mic_lock));
     pthread_mutex_unlock(&adev->lock);
 
     return bytes;
@@ -496,9 +499,9 @@ static int adev_set_mic_mute(struct audio_hw_device *dev, bool state)
 {
     struct generic_audio_device *adev = (struct generic_audio_device *)dev;
 
-    pthread_mutex_lock(&adev->lock);
+    pthread_mutex_lock(&(adev->mic_lock));
     adev->mic_mute = state;
-    pthread_mutex_unlock(&adev->lock);
+    pthread_mutex_unlock(&(adev->mic_lock));
     return 0;
 }
 
@@ -506,9 +509,9 @@ static int adev_get_mic_mute(const struct audio_hw_device *dev, bool *state)
 {
     struct generic_audio_device *adev = (struct generic_audio_device *)dev;
 
-    pthread_mutex_lock(&adev->lock);
+    pthread_mutex_lock(&(adev->mic_lock));
     *state = adev->mic_mute;
-    pthread_mutex_unlock(&adev->lock);
+    pthread_mutex_unlock(&(adev->mic_lock));
 
     return 0;
 }
