@@ -58,6 +58,9 @@ on post-fs-data
     mkdir /data/misc/dhcp 0770 dhcp dhcp
     chown dhcp dhcp /data/misc/dhcp
 
+# Create a writable fake fwpath for emulator. (/sys/module/wlan/parameters/fwpath on device)
+    write /data/misc/wifi/fake_fwpath sta
+
 service wpa_supplicant /system/bin/wpa_supplicant -Dtest -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf -g@android:wpa_wlan0
     class main
     user root
